@@ -19,7 +19,7 @@ def strtobool(val):
         return 1
     elif val in ('n', 'no', 'f', 'false', 'off', '0'):
         return 0
-    else:
+    else:  # pragma: no-cover
         raise ValueError(f'invalid truth value {val}')
 
 
