@@ -270,7 +270,7 @@ def _run_power_scaling(trainer, model, new_size, batch_arg_name, max_trials):
             trainer.fit(model)
             # Double in size
             new_size = _adjust_batch_size(trainer, batch_arg_name, factor=2.0, desc='succeeded')
-        except RuntimeError as exception:
+        except RuntimeError as exception:  # pragma: no-cover
             # Only these errors should trigger an adjustment
             if is_oom_error(exception):
                 # If we fail in power mode, half the size and return
