@@ -1,5 +1,5 @@
 from collections import Mapping, Sequence
-from typing import Any, Callable, Union
+from typing import Any, Callable, Union, Optional
 
 
 def apply_to_collection(data: Any, dtype: Union[type, tuple], function: Callable, *args,
