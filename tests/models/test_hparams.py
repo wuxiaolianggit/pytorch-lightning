@@ -7,6 +7,8 @@ from pytorch_lightning import Trainer, LightningModule
 from pytorch_lightning.core.lightning import CHECKPOINT_KEY_MODULE_ARGS
 from tests.base import EvalModelTemplate
 from omegaconf import OmegaConf
+from pytorch_lightning.utilities.parsing import clean_namespace
+from argparse import Namespace
 import sys
 
 
@@ -15,6 +17,14 @@ class OmegaConfModel(EvalModelTemplate):
         super().__init__()
         self.ogc = ogc
         self.size = ogc.list[0]
+
+
+def test_hparam_parsing(tmpdir):
+    hparams = Namespace(var=1, var2=2)
+    hparams.some_fx = lambda x: x
+
+    clean_namespace(hparams)
+    assert not hasattr(hparams, 'some_fx')
 
 
 def test_class_nesting(tmpdir):
