@@ -758,32 +758,6 @@ def determine_root_gpu_device(gpus):
     return root_gpu
 
 
-def retry_jittered_backoff(func: Callable, num_retries: int = 5, cap_delay: float = 1.0, base_delay: float = 0.01):
-    """Retry jittered backoff.
-
-    Based on:
-    https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/
-
-    Args:
-        func: tested function
-        num_retries: number of tries
-        cap_delay: max sleep time
-        base_delay: initial sleep time is 10ms
-    """
-    sleep_delay = base_delay         # initial sleep time is 10ms
-
-    for i in range(num_retries):
-        try:
-            return func()
-        except RuntimeError as err:
-            if i == num_retries - 1:
-                raise err
-            else:
-                continue
-        time.sleep(sleep_delay)
-        sleep_delay = min(cap_delay, random.uniform(base_delay, sleep_delay * 3))
-
-
 def pick_single_gpu(exclude_gpus: list):
     for i in range(torch.cuda.device_count()):
         if i in exclude_gpus:
