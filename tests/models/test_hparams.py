@@ -64,7 +64,7 @@ class SubClassEvalModel(EvalModelTemplate):
     def __init__(self, *args, subclass_arg=1200, **kwargs):
         super().__init__(*args, **kwargs)
         self.subclass_arg = subclass_arg
-        self.auto_collect_arguments()
+        self._auto_collect_arguments()
 
 
 class UnconventionalArgsEvalModel(EvalModelTemplate):
@@ -75,7 +75,7 @@ class UnconventionalArgsEvalModel(EvalModelTemplate):
         super().__init__(*more_args, **more_kwargs)
         obj.other_arg = other_arg
         other_arg = 321
-        obj.auto_collect_arguments()
+        obj._auto_collect_arguments()
 
 
 class SubSubClassEvalModel(SubClassEvalModel):
@@ -87,7 +87,7 @@ class AggSubClassEvalModel(SubClassEvalModel):
     def __init__(self, *args, my_loss=torch.nn.CrossEntropyLoss(), **kwargs):
         super().__init__(*args, **kwargs)
         self.my_loss = my_loss
-        self.auto_collect_arguments()
+        self._auto_collect_arguments()
 
 
 @pytest.mark.parametrize("cls", [
@@ -146,14 +146,14 @@ class LocalVariableModel1(EvalModelTemplate):
 
 
 class LocalVariableModel2(EvalModelTemplate):
-    """ This model has the auto_collect_arguments() call at the end. """
+    """ This model has the _auto_collect_arguments() call at the end. """
 
     def __init__(self, arg1, arg2, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.argument1 = arg1  # arg2 intentionally not set
         arg1 = 'overwritten'
         local_var = 1234
-        self.auto_collect_arguments()  # this is intentionally here at the end
+        self._auto_collect_arguments()  # this is intentionally here at the end
 
 
 @pytest.mark.parametrize("cls", [

@@ -1698,7 +1698,10 @@ class LightningModule(ABC, DeviceDtypeModuleMixin, GradInformation, ModelIO, Mod
                        " and this method will be removed in v1.0.0", DeprecationWarning)
         return self.get_progress_bar_dict()
 
-    def auto_collect_arguments(self) -> None:
+    def save_hyperparameters(self, *args, **kwargs):
+        self._auto_collect_arguments()
+
+    def _auto_collect_arguments(self) -> None:
         """
         Collect all module arguments in the current constructor and all child constructors.
         The child constructors are all the ``__init__`` methods that reach the current class through
@@ -1731,7 +1734,7 @@ class LightningModule(ABC, DeviceDtypeModuleMixin, GradInformation, ModelIO, Mod
             args.update(self._module_self_arguments)
             return args
         except AttributeError as e:
-            rank_zero_warn('you called `module.module_arguments` without calling self.auto_collect_arguments()')
+            rank_zero_warn('you called `module.module_arguments` without calling self._auto_collect_arguments()')
             return {}
 
 
