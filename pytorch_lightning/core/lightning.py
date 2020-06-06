@@ -76,6 +76,10 @@ class LightningModule(ABC, DeviceDtypeModuleMixin, GradInformation, ModelIO, Mod
         #: device reference
         self._device = torch.device('cpu')
 
+        # module arguments
+        self._module_self_arguments = {}
+        self._module_parents_arguments = {}
+
     @property
     def on_gpu(self):
         """
@@ -1698,8 +1702,18 @@ class LightningModule(ABC, DeviceDtypeModuleMixin, GradInformation, ModelIO, Mod
                        " and this method will be removed in v1.0.0", DeprecationWarning)
         return self.get_progress_bar_dict()
 
-    def save_hyperparameters(self, *args, **kwargs):
-        self._auto_collect_arguments()
+    def save_hyperparameters(self, hparams=None, **kwargs):
+        if not hparams and not kwargs:
+            self._auto_collect_arguments()
+        elif not hparams:
+            self._module_self_arguments.update(kwargs)
+        elif hparams and not kwargs:
+            self._module_self_arguments.update(**vars(hparams))
+            self.hparams = hparams  # backward compatible
+        else:
+            # TODO: better message
+            raise MisconfigurationException('hparams and kwargs arguments are mutually exclusive')
+
 
     def _auto_collect_arguments(self) -> None:
         """
@@ -1709,7 +1723,7 @@ class LightningModule(ABC, DeviceDtypeModuleMixin, GradInformation, ModelIO, Mod
         """
         frame = inspect.currentframe()
 
-        frame_args = _collect_init_args(frame.f_back, [])
+        frame_args = _collect_init_args(frame.f_back.f_back, [])
         self_arguments = frame_args[-1]
 
         # set module_arguments in child
@@ -1734,7 +1748,7 @@ class LightningModule(ABC, DeviceDtypeModuleMixin, GradInformation, ModelIO, Mod
             args.update(self._module_self_arguments)
             return args
         except AttributeError as e:
-            rank_zero_warn('you called `module.module_arguments` without calling self._auto_collect_arguments()')
+            rank_zero_warn('you called `module.module_arguments` without calling self.save_hyperparameters()')
             return {}
 
 
