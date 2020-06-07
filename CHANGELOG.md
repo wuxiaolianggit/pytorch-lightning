@@ -50,7 +50,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 - Removed unintended Trainer argument `progress_bar_callback`, the callback should be passed in by `Trainer(callbacks=[...])` instead ([#1855](https://github.com/PyTorchLightning/pytorch-lightning/pull/1855))
 
-- Remove obsolete `self._device` in Trainer ([#1849](https://github.com/PyTorchLightning/pytorch-lightning/pull/1849))
+- Removed obsolete `self._device` in Trainer ([#1849](https://github.com/PyTorchLightning/pytorch-lightning/pull/1849))
 
 - Removed deprecated API ([#2073](https://github.com/PyTorchLightning/pytorch-lightning/pull/2073))
    * Packages: `pytorch_lightning.pt_overrides`, `pytorch_lightning.root_module`
